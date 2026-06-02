@@ -8,9 +8,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; color: #333; background: #f5f5f5; }
         nav { background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        nav .logo { font-size: 1.5rem; font-weight: bold; color: #0066cc; }
+        nav .logo { font-size: 1.5rem; font-weight: bold; color: #667eea; }
         nav a { color: #333; text-decoration: none; margin: 0 1rem; }
-        .hero { background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem 2rem; text-align: center; }
         .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
         .reports-grid { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
         .report {
@@ -25,7 +25,7 @@
         .report:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            border-color: #0066cc;
+            border-color: #667eea;
         }
         .report-header { padding: 1.5rem; background: #f9f9f9; display: flex; justify-content: space-between; align-items: start; }
         .report-header h3 { margin-bottom: 0.3rem; }
@@ -36,14 +36,14 @@
         .metrics { display: grid; grid-template-columns: repeat(3, 1fr); padding: 1.5rem; gap: 1rem; background: #f9f9f9; }
         .metric { text-align: center; }
         .metric-label { font-size: 0.85rem; color: #666; }
-        .metric-value { font-size: 1.8rem; font-weight: bold; color: #0066cc; }
+        .metric-value { font-size: 1.8rem; font-weight: bold; color: #667eea; }
         .findings { padding: 1.5rem; }
         .findings h4 { margin-bottom: 1rem; }
         .findings ul { list-style: none; }
         .findings li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; color: #666; }
-        .findings li:before { content: "→"; position: absolute; left: 0; color: #0066cc; }
-        .view-btn { width: 100%; padding: 0.8rem; margin: 0 1.5rem 1.5rem 1.5rem; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .view-btn:hover { background: #0052a3; }
+        .findings li:before { content: "→"; position: absolute; left: 0; color: #667eea; }
+        .view-btn { width: 100%; padding: 0.8rem; margin: 0 1.5rem 1.5rem 1.5rem; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .view-btn:hover { background: #764ba2; }
 
         /* MODAL */
         .modal {
@@ -90,7 +90,7 @@
         }
         .close:hover { color: #333; }
         .report-detail h2 {
-            color: #0066cc;
+            color: #667eea;
             margin-bottom: 1.5rem;
             font-size: 2.2rem;
             font-weight: 700;
@@ -101,15 +101,15 @@
             line-height: 1.6;
         }
         .report-detail > p strong {
-            color: #0066cc;
+            color: #667eea;
         }
         .report-detail h3 {
-            color: #0066cc;
+            color: #667eea;
             margin-top: 2.5rem;
             margin-bottom: 1.5rem;
             font-size: 1.4rem;
             font-weight: 600;
-            border-bottom: 3px solid #0066cc;
+            border-bottom: 3px solid #667eea;
             padding-bottom: 0.75rem;
         }
         .report-detail ul { list-style: none; }
@@ -121,9 +121,9 @@
             background: #f8f9fa;
             padding: 1.5rem;
             border-radius: 8px;
-            border-left: 4px solid #0066cc;
+            border-left: 4px solid #667eea;
         }
-        .detail-card h4 { color: #0066cc; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .detail-card h4 { color: #667eea; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .detail-card p { color: #666; font-size: 0.95rem; line-height: 1.5; }
 
         .risk-distribution { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
@@ -132,12 +132,12 @@
             padding: 1rem;
             border-radius: 8px;
             text-align: center;
-            border-top: 3px solid #0066cc;
+            border-top: 3px solid #667eea;
         }
         .risk-item.critical { border-top-color: #dc3545; }
         .risk-item.high { border-top-color: #ff9800; }
         .risk-item.medium { border-top-color: #17a2b8; }
-        .risk-count { font-size: 2rem; font-weight: bold; color: #0066cc; }
+        .risk-count { font-size: 2rem; font-weight: bold; color: #667eea; }
         .risk-label { font-size: 0.85rem; color: #666; margin-top: 0.5rem; }
 
         .compliance-tags {
@@ -279,7 +279,7 @@
                         </div>
                         <div class="detail-card">
                             <h4>Security Score</h4>
-                            <p><span style="font-size: 1.5rem; color: #0066cc; font-weight: bold;">${r.score}</span>/100</p>
+                            <p><span style="font-size: 1.5rem; color: #667eea; font-weight: bold;">${r.score}</span>/100</p>
                         </div>
                     </div>
 
@@ -303,7 +303,7 @@
                     ${riskDist}
 
                     <h3>Executive Summary</h3>
-                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; padding: 1rem; background: #f0f7ff; border-left: 4px solid #0066cc; border-radius: 4px;">${r.summary}</p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; padding: 1rem; background: #f0f7ff; border-left: 4px solid #667eea; border-radius: 4px;">${r.summary}</p>
 
                     <h3>Detailed Findings (${r.findings.length} security issues)</h3>
                     <ul>
