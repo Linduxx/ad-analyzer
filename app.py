@@ -36,6 +36,15 @@ def init_db():
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''')
     conn.commit()
+
+    # Create default admin if not exists
+    c.execute('SELECT COUNT(*) as count FROM admins')
+    if c.fetchone()['count'] == 0:
+        hashed = generate_password_hash('admin123')
+        c.execute("INSERT INTO admins (username, password, email) VALUES (?, ?, ?)",
+                 ('admin', hashed, 'admin@adanalyzer.io'))
+        conn.commit()
+
     conn.close()
 
 init_db()
