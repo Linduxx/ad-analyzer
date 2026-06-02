@@ -70,6 +70,55 @@ def features():
     ]
     return render_template('features.html', features=features_list)
 
+@app.route('/report/<int:report_id>')
+def report_detail(report_id):
+    """Zafiyet detay sayfası"""
+    vulnerabilities = {
+        1: {  # Acme Corp
+            'name': 'Acme Corp - Critical Security Assessment',
+            'company': 'acme.com',
+            'score': 35,
+            'findings_count': 24,
+            'severity': 'critical',
+            'issues': [
+                {'id': 'AC-001', 'title': 'Excessive Domain Administrator Accounts', 'severity': 'critical', 'desc': 'More than five user accounts are members of Domain Admins group.', 'remediation': 'Audit and remove unnecessary Domain Admin accounts. Implement dedicated admin accounts and Protected Users group.'},
+                {'id': 'AC-002', 'title': 'Guest Account Enabled', 'severity': 'critical', 'desc': 'Built-in Guest account is enabled and accessible.', 'remediation': 'Disable Guest account via Group Policy. Remove from all security groups except Guests.'},
+                {'id': 'KR-001', 'title': 'Kerberoastable Accounts with RC4', 'severity': 'critical', 'desc': 'Service accounts support RC4-HMAC encryption, enabling offline password cracking.', 'remediation': 'Enable AES256 encryption. Use Group Managed Service Accounts (gMSAs) with auto-rotating passwords.'},
+                {'id': 'AC-004', 'title': 'Inactive User Accounts (90+ Days)', 'severity': 'high', 'desc': '347 user accounts show no logon activity for over 90 days.', 'remediation': 'Disable inactive accounts after 60 days. Implement automated account lifecycle management.'},
+                {'id': 'PP-001', 'title': 'Weak Password Length Policy', 'severity': 'high', 'desc': 'Minimum password length is 8 characters (CIS recommends 14+).', 'remediation': 'Set minimum password length to 14 characters. Enforce for all users including admins.'},
+            ]
+        },
+        2: {  # TechCorp
+            'name': 'TechCorp - High Risk AD Audit',
+            'company': 'techcorp.net',
+            'score': 58,
+            'findings_count': 18,
+            'severity': 'high',
+            'issues': [
+                {'id': 'AC-005', 'title': 'Passwords Set to Never Expire', 'severity': 'high', 'desc': 'Multiple accounts with DONT_EXPIRE_PASSWORD flag enabled.', 'remediation': 'Remove never-expire flag. Implement 90-day rotation policy for all users.'},
+                {'id': 'SY-005', 'title': 'NTLMv1 Authentication Permitted', 'severity': 'high', 'desc': 'Legacy NTLMv1 protocol still supported in domain.', 'remediation': 'Require NTLMv2 only. Set LAN Manager auth level to 5 via Group Policy.'},
+                {'id': 'PM-009', 'title': 'Privileged Accounts Without Smart Card', 'severity': 'high', 'desc': 'Domain Admins do not require smart card for login.', 'remediation': 'Enable smart card requirement for all Tier 0 accounts. Deploy hardware tokens.'},
+            ]
+        },
+        3: {  # Example.org
+            'name': 'Example.org - Compliance Verification',
+            'company': 'example.org',
+            'score': 72,
+            'findings_count': 8,
+            'severity': 'medium',
+            'issues': [
+                {'id': 'PP-003', 'title': 'No Account Lockout Policy', 'severity': 'medium', 'desc': 'Account lockout policy not configured in domain.', 'remediation': 'Set lockout threshold to 5 attempts, duration to 15 minutes.'},
+                {'id': 'SY-002', 'title': 'Low Domain Functional Level', 'severity': 'medium', 'desc': 'Domain operating at 2012 level instead of 2016+.', 'remediation': 'Upgrade all DCs to Server 2016+. Raise DFL to 2016 or higher.'},
+            ]
+        }
+    }
+
+    if report_id not in vulnerabilities:
+        return redirect('/demo')
+
+    report = vulnerabilities[report_id]
+    return render_template('report_detail.html', report=report)
+
 @app.route('/demo')
 def demo():
     """Demo raporlar"""

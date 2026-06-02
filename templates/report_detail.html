@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ report.name }} - AD Analyzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; color: #2c3e50; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+
+        /* NAV */
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav .logo { font-size: 1.5rem; font-weight: bold; color: white; }
+        nav a { color: white; text-decoration: none; margin: 0 1.5rem; transition: opacity 0.3s; }
+        nav a:hover { opacity: 0.8; }
+
+        /* HEADER */
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .report-header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .report-meta { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+        .meta-item { text-align: center; }
+        .meta-label { font-size: 0.9rem; opacity: 0.9; }
+        .meta-value { font-size: 1.5rem; font-weight: bold; }
+
+        /* SCORE CIRCLE */
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+        .critical { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .high { background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%); color: white; }
+        .medium { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .low { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }
+
+        .score-value { font-size: 2.5rem; }
+        .score-label { font-size: 0.9rem; opacity: 0.9; }
+
+        /* CONTENT */
+        .container { max-width: 1000px; margin: 3rem auto; padding: 0 2rem; }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        /* FINDINGS */
+        .finding {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 5px solid #667eea;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .finding:hover {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+            transform: translateX(5px);
+        }
+
+        .finding.critical { border-left-color: #f5576c; }
+        .finding.high { border-left-color: #ffa751; }
+        .finding.medium { border-left-color: #4facfe; }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .finding-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .finding-id {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .finding-severity {
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .finding-severity.critical {
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+        }
+
+        .finding-severity.high {
+            background: rgba(255, 167, 81, 0.2);
+            color: #ffa751;
+        }
+
+        .finding-severity.medium {
+            background: rgba(79, 172, 254, 0.2);
+            color: #4facfe;
+        }
+
+        .finding-content {
+            margin-top: 1rem;
+        }
+
+        .finding-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+            margin-top: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .finding-text {
+            color: #555;
+            line-height: 1.6;
+            margin-top: 0.4rem;
+        }
+
+        /* BACK BUTTON */
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* FOOTER */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <div class="logo">🔐 AD Analyzer</div>
+        <div>
+            <a href="/">Home</a>
+            <a href="/demo">Back to Demo</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="report-header">
+        <h1>{{ report.name }}</h1>
+        <div class="report-meta">
+            <div class="meta-item">
+                <div class="meta-label">Company</div>
+                <div class="meta-value">{{ report.company }}</div>
+            </div>
+            <div class="meta-item">
+                <div class="score-circle {{ report.severity }}">
+                    <div class="score-value">{{ report.score }}</div>
+                    <div class="score-label">/100</div>
+                </div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">Issues Found</div>
+                <div class="meta-value">{{ report.findings_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <a href="/demo" class="back-btn">← Back to Demo</a>
+
+        <div class="section">
+            <h2>🔍 Findings & Vulnerabilities</h2>
+
+            {% for issue in report.issues %}
+            <div class="finding {{ issue.severity }}">
+                <div class="finding-header">
+                    <div>
+                        <div class="finding-title">{{ issue.title }}</div>
+                        <span class="finding-id">{{ issue.id }}</span>
+                    </div>
+                    <span class="finding-severity {{ issue.severity }}">{{ issue.severity }}</span>
+                </div>
+
+                <div class="finding-content">
+                    <div class="finding-label">Description</div>
+                    <div class="finding-text">{{ issue.desc }}</div>
+
+                    <div class="finding-label">Remediation</div>
+                    <div class="finding-text">{{ issue.remediation }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 AD Analyzer. Professional Active Directory Security Auditing.</p>
+    </footer>
+</body>
+</html>
