@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AD Analyzer - Active Directory Security</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; color: #333; line-height: 1.6; }
+
+        /* NAV */
+        nav {
+            background: white; padding: 1rem 2rem; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+        }
+        nav .logo { font-size: 1.5rem; font-weight: bold; color: #0066cc; }
+        nav a { color: #333; text-decoration: none; margin: 0 1rem; transition: color 0.3s; }
+        nav a:hover { color: #0066cc; }
+        nav .btn { background: #0066cc; color: white; padding: 0.6rem 1.5rem; border-radius: 5px; }
+        nav .btn:hover { background: #0052a3; }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white; padding: 8rem 2rem; text-align: center;
+        }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.3rem; margin-bottom: 2rem; opacity: 0.95; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: white; color: #0066cc; padding: 0.9rem 2.5rem; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .btn-secondary { border: 2px white solid; background: transparent; color: white; padding: 0.7rem 2.3rem; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .btn-secondary:hover { background: white; color: #0066cc; }
+
+        /* FEATURES */
+        .features { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+        .features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .feature-card { background: #f9f9f9; padding: 2rem; border-radius: 8px; text-align: center; transition: all 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .feature-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-card h3 { color: #0066cc; margin-bottom: 0.5rem; }
+
+        /* DEMO SECTION */
+        .demo-section {
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 82, 163, 0.1) 100%);
+            padding: 4rem 2rem; text-align: center;
+        }
+        .demo-section h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .demo-section p { font-size: 1.1rem; margin-bottom: 2rem; }
+
+        /* CTA */
+        .cta-section { background: white; padding: 3rem 2rem; text-align: center; }
+        .cta-section h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .cta-section p { font-size: 1.1rem; margin-bottom: 2rem; }
+
+        /* FOOTER */
+        footer { background: #333; color: white; text-align: center; padding: 2rem; }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 95%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-content h3 { margin-bottom: 1rem; color: #0066cc; }
+        .modal-content input {
+            width: 100%;
+            padding: 0.9rem;
+            margin-bottom: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .modal-content input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        .modal-content button {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .modal-content button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 102, 204, 0.3);
+        }
+        .modal-content button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <div class="logo">🔐 AD Analyzer</div>
+        <div>
+            <a href="/#features">Features</a>
+            <a href="/pricing">Pricing</a>
+            <a href="/demo">Demo</a>
+            <a href="/admin/login" class="btn">Admin</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>Secure Your Active Directory</h1>
+        <p>Professional security analysis and comprehensive reporting for enterprise environments</p>
+        <div class="cta-buttons">
+            <button class="btn-primary" onclick="openModal()">Start Free Trial</button>
+            <a href="/pricing" class="btn-secondary">View Pricing</a>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="features" id="features">
+        <h2>Powerful Security Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">📊</div>
+                <h3>50-Point Assessment</h3>
+                <p>Comprehensive evaluation covering all critical AD security areas</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📈</div>
+                <h3>Professional Reports</h3>
+                <p>Detailed HTML and PDF reports with actionable recommendations</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔔</div>
+                <h3>Real-Time Alerts</h3>
+                <p>Instant notifications for critical security issues</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔐</div>
+                <h3>Enterprise Security</h3>
+                <p>Bank-level encryption and data protection</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>API Access</h3>
+                <p>Integrate with your existing security tools</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">👥</div>
+                <h3>Team Collaboration</h3>
+                <p>Share reports and insights with your team</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMO -->
+    <section class="demo-section">
+        <h2>See Sample Reports</h2>
+        <p>Check out example security assessments from real organizations</p>
+        <a href="/demo" class="btn-primary" style="text-decoration: none; display: inline-block;">View Demo Reports →</a>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>Ready to Secure Your Infrastructure?</h2>
+        <p>Join hundreds of enterprises using AD Analyzer</p>
+        <button class="btn-primary" onclick="openModal()">Get Started Now</button>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 AD Analyzer. Protecting enterprise infrastructure worldwide.</p>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal" onclick="closeModalOnBg(event)">
+        <div class="modal-content" style="position: relative; max-width: 450px;">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h3 style="color: #0066cc; font-size: 1.8rem; margin-bottom: 0.5rem;">Start Your Free Trial</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">Join hundreds of enterprises protecting their infrastructure</p>
+            <div style="margin-bottom: 1rem;">
+                <input type="email" id="email" placeholder="your@email.com" style="width: 100%; padding: 0.9rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;">
+            </div>
+            <button onclick="subscribe()" style="width: 100%; padding: 0.9rem; background: #0066cc; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">Get Started Free</button>
+            <p id="message" style="margin-top: 1rem; text-align: center; font-weight: 500;"></p>
+            <p style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: #999;">No credit card required. Cancel anytime.</p>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('email').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('email').value = '';
+            document.getElementById('message').innerText = '';
+        }
+
+        function closeModalOnBg(event) {
+            if (event.target.id === 'modal') {
+                closeModal();
+            }
+        }
+
+        async function subscribe() {
+            const email = document.getElementById('email').value.trim();
+            const msg = document.getElementById('message');
+            const btn = event.target;
+
+            if (!email || !email.includes('@')) {
+                msg.innerText = 'Please enter a valid email';
+                msg.style.color = '#dc3545';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Processing...';
+
+            try {
+                const res = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email})
+                });
+
+                const data = await res.json();
+                if (data.status === 'success') {
+                    msg.innerText = 'Success! Check your email for next steps';
+                    msg.style.color = '#28a745';
+                    document.getElementById('email').value = '';
+                    setTimeout(() => closeModal(), 2000);
+                } else {
+                    msg.innerText = data.message || 'Error occurred';
+                    msg.style.color = '#dc3545';
+                }
+            } catch (error) {
+                msg.innerText = 'Network error. Please try again.';
+                msg.style.color = '#dc3545';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Get Started Free';
+            }
+        }
+
+        // Enter tuşu ile subscribe
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('modal').classList.contains('active')) {
+                subscribe();
+            }
+        });
+    </script>
+</body>
+</html>
