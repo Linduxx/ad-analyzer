@@ -139,9 +139,8 @@ def get_all_vulnerabilities():
         {'id': 'SY-007', 'title': 'LDAP Signing Not Required on Domain Controllers', 'severity': 'high', 'desc': 'LDAP signing not required enabling LDAP relay attacks to modify directory objects.', 'remediation': 'Require LDAP signing via Group Policy (DC: LDAP server signing requirements = Require signing).'},
     ]
 
-    # Tüm zafiyetleri 8x tekrarla (50 * 8 = 400) + ek 150 = 550
-    repeated_issues = issues * 11
-    return repeated_issues[:550]
+    # Tüm 50 zafiyeti döndür (tekrar yapma)
+    return issues
 
 @app.route('/report/<int:report_id>')
 def report_detail(report_id):
@@ -153,7 +152,7 @@ def report_detail(report_id):
             'name': 'Acme Corp - Critical Security Assessment',
             'company': 'acme.com',
             'score': 15,
-            'findings_count': 550,
+            'findings_count': 50,
             'severity': 'critical',
             'issues': all_issues
         },
@@ -161,17 +160,17 @@ def report_detail(report_id):
             'name': 'TechCorp - High Risk AD Audit',
             'company': 'techcorp.net',
             'score': 42,
-            'findings_count': 487,
+            'findings_count': 50,
             'severity': 'high',
-            'issues': all_issues[50:487]
+            'issues': all_issues
         },
         3: {  # Example.org
             'name': 'Example.org - Compliance Verification',
             'company': 'example.org',
             'score': 68,
-            'findings_count': 95,
+            'findings_count': 50,
             'severity': 'medium',
-            'issues': all_issues[400:495]
+            'issues': all_issues
         }
     }
 
@@ -190,7 +189,7 @@ def demo():
             'company': 'acme.com',
             'severity': 'critical',
             'score': 15,
-            'issues': 550,
+            'issues': 50,
             'date': '2026-05-20',
             'summary': 'Critical security vulnerabilities detected across multiple domains. Immediate remediation required.',
             'risk_distribution': {'critical': 8, 'high': 10, 'medium': 6},
@@ -223,7 +222,7 @@ def demo():
             'company': 'techcorp.net',
             'severity': 'high',
             'score': 42,
-            'issues': 487,
+            'issues': 50,
             'date': '2026-05-18',
             'summary': 'Several high-risk security issues identified. Should be addressed within 30 days.',
             'risk_distribution': {'critical': 0, 'high': 8, 'medium': 10},
@@ -256,7 +255,7 @@ def demo():
             'company': 'example.org',
             'severity': 'medium',
             'score': 68,
-            'issues': 95,
+            'issues': 50,
             'date': '2026-05-15',
             'summary': 'Moderate security gaps identified. Address within 60 days to maintain compliance.',
             'risk_distribution': {'critical': 0, 'high': 2, 'medium': 6},
