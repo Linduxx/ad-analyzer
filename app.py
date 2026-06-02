@@ -21,8 +21,6 @@ def get_db():
     return conn
 
 def init_db():
-    if os.path.exists(DATABASE):
-        return
     conn = get_db()
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS admins (
@@ -39,6 +37,8 @@ def init_db():
     )''')
     conn.commit()
     conn.close()
+
+init_db()
 
 # ==================== MARKETİNG ROUTES ====================
 
