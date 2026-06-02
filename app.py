@@ -79,46 +79,60 @@ def features():
     ]
     return render_template('features.html', features=features_list)
 
+def generate_vulnerabilities(count=550):
+    """Generate detailed vulnerability list"""
+    vuln_templates = [
+        {'id': 'AC-{:03d}', 'title': 'Excessive Domain Administrator Accounts', 'severity': 'critical', 'desc': 'Multiple user accounts with unrestricted administrative privileges detected in Domain Admins group.', 'remediation': 'Audit and implement least privilege access. Remove unnecessary admin accounts and use Protected Users group.'},
+        {'id': 'AC-{:03d}', 'title': 'Guest Account Enabled', 'severity': 'critical', 'desc': 'Built-in Guest account is in enabled state allowing anonymous access to resources.', 'remediation': 'Disable Guest account immediately via Group Policy. Remove from all security groups.'},
+        {'id': 'KR-{:03d}', 'title': 'Kerberoastable Service Accounts', 'severity': 'critical', 'desc': 'Service accounts with SPNs support weak RC4 encryption enabling offline password cracking.', 'remediation': 'Enable AES256 encryption on all service accounts. Migrate to Group Managed Service Accounts (gMSAs).'},
+        {'id': 'PP-{:03d}', 'title': 'Weak Password Policy Configuration', 'severity': 'high', 'desc': 'Password minimum length below recommended standards. Current: 8 characters, Recommended: 14+', 'remediation': 'Update Group Policy to enforce 14+ character passwords with complexity requirements.'},
+        {'id': 'PM-{:03d}', 'title': 'Privileged Account Missing MFA', 'severity': 'high', 'desc': 'Domain Admin accounts do not require multi-factor authentication for login.', 'remediation': 'Enable MFA for all Tier 0 and Tier 1 accounts. Deploy smart cards or hardware tokens.'},
+        {'id': 'SY-{:03d}', 'title': 'Legacy Protocol Support Enabled', 'severity': 'high', 'desc': 'NTLMv1 and LM authentication protocols still enabled in domain, vulnerable to relay attacks.', 'remediation': 'Disable legacy protocols. Require NTLMv2 minimum via Group Policy security settings.'},
+        {'id': 'AC-{:03d}', 'title': 'Inactive User Accounts Not Removed', 'severity': 'medium', 'desc': 'User accounts with no logon activity for 90+ days still active and assigned to privileged groups.', 'remediation': 'Implement automated account lifecycle management. Disable inactive accounts after 60 days.'},
+        {'id': 'PP-{:03d}', 'title': 'No Account Lockout Policy', 'severity': 'medium', 'desc': 'Account lockout policy not configured enabling unlimited password guessing attempts.', 'remediation': 'Configure 5 failed attempts lockout with 15-minute duration via Group Policy.'},
+    ]
+
+    issues = []
+    for i in range(count):
+        template = vuln_templates[i % len(vuln_templates)]
+        issues.append({
+            'id': template['id'].format(i + 1),
+            'title': f"{template['title']} (Instance {i // len(vuln_templates) + 1})",
+            'severity': template['severity'],
+            'desc': template['desc'],
+            'remediation': template['remediation']
+        })
+    return issues
+
 @app.route('/report/<int:report_id>')
 def report_detail(report_id):
     """Zafiyet detay sayfası"""
+    all_issues = generate_vulnerabilities(550)
+
     vulnerabilities = {
         1: {  # Acme Corp
             'name': 'Acme Corp - Critical Security Assessment',
             'company': 'acme.com',
-            'score': 35,
-            'findings_count': 24,
+            'score': 15,
+            'findings_count': 550,
             'severity': 'critical',
-            'issues': [
-                {'id': 'AC-001', 'title': 'Excessive Domain Administrator Accounts', 'severity': 'critical', 'desc': 'More than five user accounts are members of Domain Admins group.', 'remediation': 'Audit and remove unnecessary Domain Admin accounts. Implement dedicated admin accounts and Protected Users group.'},
-                {'id': 'AC-002', 'title': 'Guest Account Enabled', 'severity': 'critical', 'desc': 'Built-in Guest account is enabled and accessible.', 'remediation': 'Disable Guest account via Group Policy. Remove from all security groups except Guests.'},
-                {'id': 'KR-001', 'title': 'Kerberoastable Accounts with RC4', 'severity': 'critical', 'desc': 'Service accounts support RC4-HMAC encryption, enabling offline password cracking.', 'remediation': 'Enable AES256 encryption. Use Group Managed Service Accounts (gMSAs) with auto-rotating passwords.'},
-                {'id': 'AC-004', 'title': 'Inactive User Accounts (90+ Days)', 'severity': 'high', 'desc': '347 user accounts show no logon activity for over 90 days.', 'remediation': 'Disable inactive accounts after 60 days. Implement automated account lifecycle management.'},
-                {'id': 'PP-001', 'title': 'Weak Password Length Policy', 'severity': 'high', 'desc': 'Minimum password length is 8 characters (CIS recommends 14+).', 'remediation': 'Set minimum password length to 14 characters. Enforce for all users including admins.'},
-            ]
+            'issues': all_issues
         },
         2: {  # TechCorp
             'name': 'TechCorp - High Risk AD Audit',
             'company': 'techcorp.net',
-            'score': 58,
-            'findings_count': 18,
+            'score': 42,
+            'findings_count': 487,
             'severity': 'high',
-            'issues': [
-                {'id': 'AC-005', 'title': 'Passwords Set to Never Expire', 'severity': 'high', 'desc': 'Multiple accounts with DONT_EXPIRE_PASSWORD flag enabled.', 'remediation': 'Remove never-expire flag. Implement 90-day rotation policy for all users.'},
-                {'id': 'SY-005', 'title': 'NTLMv1 Authentication Permitted', 'severity': 'high', 'desc': 'Legacy NTLMv1 protocol still supported in domain.', 'remediation': 'Require NTLMv2 only. Set LAN Manager auth level to 5 via Group Policy.'},
-                {'id': 'PM-009', 'title': 'Privileged Accounts Without Smart Card', 'severity': 'high', 'desc': 'Domain Admins do not require smart card for login.', 'remediation': 'Enable smart card requirement for all Tier 0 accounts. Deploy hardware tokens.'},
-            ]
+            'issues': all_issues[50:487]
         },
         3: {  # Example.org
             'name': 'Example.org - Compliance Verification',
             'company': 'example.org',
-            'score': 72,
-            'findings_count': 8,
+            'score': 68,
+            'findings_count': 95,
             'severity': 'medium',
-            'issues': [
-                {'id': 'PP-003', 'title': 'No Account Lockout Policy', 'severity': 'medium', 'desc': 'Account lockout policy not configured in domain.', 'remediation': 'Set lockout threshold to 5 attempts, duration to 15 minutes.'},
-                {'id': 'SY-002', 'title': 'Low Domain Functional Level', 'severity': 'medium', 'desc': 'Domain operating at 2012 level instead of 2016+.', 'remediation': 'Upgrade all DCs to Server 2016+. Raise DFL to 2016 or higher.'},
-            ]
+            'issues': all_issues[400:495]
         }
     }
 
@@ -136,8 +150,8 @@ def demo():
             'title': 'Acme Corp - Critical Security Assessment',
             'company': 'acme.com',
             'severity': 'critical',
-            'score': 35,
-            'issues': 24,
+            'score': 15,
+            'issues': 550,
             'date': '2026-05-20',
             'summary': 'Critical security vulnerabilities detected across multiple domains. Immediate remediation required.',
             'risk_distribution': {'critical': 8, 'high': 10, 'medium': 6},
@@ -169,8 +183,8 @@ def demo():
             'title': 'TechCorp - High Risk AD Audit',
             'company': 'techcorp.net',
             'severity': 'high',
-            'score': 58,
-            'issues': 18,
+            'score': 42,
+            'issues': 487,
             'date': '2026-05-18',
             'summary': 'Several high-risk security issues identified. Should be addressed within 30 days.',
             'risk_distribution': {'critical': 0, 'high': 8, 'medium': 10},
@@ -202,8 +216,8 @@ def demo():
             'title': 'Example.org - Compliance Verification Audit',
             'company': 'example.org',
             'severity': 'medium',
-            'score': 72,
-            'issues': 8,
+            'score': 68,
+            'issues': 95,
             'date': '2026-05-15',
             'summary': 'Moderate security gaps identified. Address within 60 days to maintain compliance.',
             'risk_distribution': {'critical': 0, 'high': 2, 'medium': 6},
